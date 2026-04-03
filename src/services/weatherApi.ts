@@ -2,6 +2,7 @@ import type { Coordinates, WeatherSnapshot } from '../types';
 
 const WEATHER_BASE_URL = 'https://api.open-meteo.com/v1/forecast';
 const AIR_QUALITY_BASE_URL = 'https://air-quality-api.open-meteo.com/v1/air-quality';
+const REVERSE_GEOCODING_BASE_URL = 'https://nominatim.openstreetmap.org/reverse';
 
 type ForecastResponse = {
   current: {
@@ -22,6 +23,17 @@ type AirQualityResponse = {
     pm10: number;
     pm2_5: number;
     us_aqi: number;
+  };
+};
+
+type ReverseGeocodingResponse = {
+  address?: {
+    city?: string;
+    borough?: string;
+    county?: string;
+    town?: string;
+    suburb?: string;
+    state?: string;
   };
 };
 
@@ -53,9 +65,17 @@ export const fetchWeatherSnapshot = async ({
     timezone: 'auto',
   })}`;
 
-  const [forecastResponse, airQualityResponse] = await Promise.all([
+  const reverseGeocodingUrl = `${REVERSE_GEOCODING_BASE_URL}?${toQueryString({
+    lat: latitude,
+    lon: longitude,
+    format: 'jsonv2',
+    'accept-language': 'ko',
+  })}`;
+
+  const [forecastResponse, airQualityResponse, reverseGeocodingResponse] = await Promise.all([
     fetch(forecastUrl),
     fetch(airQualityUrl),
+    fetch(reverseGeocodingUrl),
   ]);
 
   if (!forecastResponse.ok || !airQualityResponse.ok) {
@@ -64,6 +84,16 @@ export const fetchWeatherSnapshot = async ({
 
   const forecastData = (await forecastResponse.json()) as ForecastResponse;
   const airQualityData = (await airQualityResponse.json()) as AirQualityResponse;
+  const reverseGeocodingData = reverseGeocodingResponse.ok
+    ? ((await reverseGeocodingResponse.json()) as ReverseGeocodingResponse)
+    : undefined;
+  const address = reverseGeocodingData?.address;
+  const locationLabel = [
+    address?.city ?? address?.state ?? address?.county ?? address?.town,
+    address?.borough ?? address?.county ?? address?.suburb ?? address?.town,
+  ]
+    .filter(Boolean)
+    .join(' ');
 
   return {
     currentTemperature: forecastData.current.temperature_2m,
@@ -77,7 +107,7 @@ export const fetchWeatherSnapshot = async ({
     pm2_5: airQualityData.current.pm2_5,
     usAqi: airQualityData.current.us_aqi,
     isDay: forecastData.current.is_day === 1,
-    locationLabel: '현재 위치',
+    locationLabel: locationLabel || '현재 위치',
     observationTime: forecastData.current.time,
   };
 };
