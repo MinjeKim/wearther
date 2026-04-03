@@ -1,0 +1,50 @@
+{
+    "day_clear": [
+        { "color": "#4FC3F7", "font": "#000000" },
+        { "color": "#E1F5FE", "font": "#000000" },
+        { "color": "#81D4FA", "font": "#000000" },
+        { "color": "#0288D1", "font": "#FFFFFF" }
+    ],
+    "day_cloudy": [
+        { "color": "#B0BEC5", "font": "#000000" },
+        { "color": "#ECEFF1", "font": "#000000" },
+        { "color": "#CFD8DC", "font": "#000000" },
+        { "color": "#78909C", "font": "#FFFFFF" }
+    ],
+    "day_rain": [
+        { "color": "#607D8B", "font": "#FFFFFF" },
+        { "color": "#CFD8DC", "font": "#000000" },
+        { "color": "#90A4AE", "font": "#000000" },
+        { "color": "#455A64", "font": "#FFFFFF" }
+    ],
+    "day_snow": [
+        { "color": "#ECEFF1", "font": "#000000" },
+        { "color": "#FAFAFA", "font": "#000000" },
+        { "color": "#CFD8DC", "font": "#000000" },
+        { "color": "#B0BEC5", "font": "#000000" }
+    ],
+    "night_clear": [
+        { "color": "#1A237E", "font": "#FFFFFF" },
+        { "color": "#283593", "font": "#FFFFFF" },
+        { "color": "#5C6BC0", "font": "#FFFFFF" },
+        { "color": "#0D133D", "font": "#FFFFFF" }
+    ],
+    "night_cloudy": [
+        { "color": "#37474F", "font": "#FFFFFF" },
+        { "color": "#546E7A", "font": "#FFFFFF" },
+        { "color": "#78909C", "font": "#000000" },
+        { "color": "#263238", "font": "#FFFFFF" }
+    ],
+    "night_rain": [
+        { "color": "#283593", "font": "#FFFFFF" },
+        { "color": "#3949AB", "font": "#FFFFFF" },
+        { "color": "#7986CB", "font": "#000000" },
+        { "color": "#1A237E", "font": "#FFFFFF" }
+    ],
+    "night_snow": [
+        { "color": "#CFD8DC", "font": "#000000" },
+        { "color": "#ECEFF1", "font": "#000000" },
+        { "color": "#90A4AE", "font": "#000000" },
+        { "color": "#607D8B", "font": "#FFFFFF" }
+    ]
+}
