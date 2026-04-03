@@ -44,4 +44,4 @@ export type ProductRecommendation = {
 };
 
 export type ThemeMode = 'morning' | 'day' | 'evening' | 'night';
-export type ThemeWeather = 'clear' | 'cloudy' | 'rainy' | 'snowy' | 'dusty';
+export type ThemeWeather = 'clear' | 'cloudy' | 'rainy' | 'snowy';

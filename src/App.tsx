@@ -18,6 +18,22 @@ const categoryLabels: Record<string, string> = {
   'sun-ready': '자외선 대비',
 };
 
+type Range = [number, number];
+
+type MetricHintItem = {
+  range: Range;
+  label: string;
+};
+
+type MetricHints = {
+  uvIndex: MetricHintItem[];
+  rain: MetricHintItem[];
+  pm10: MetricHintItem[];
+  pm2_5: MetricHintItem[];
+  humidity: MetricHintItem[];
+  windSpeed: MetricHintItem[];
+};
+
 const formatCoordinate = (value: number) => value.toFixed(3);
 
 const formatObservationTime = (value: string) =>
@@ -27,6 +43,53 @@ const formatObservationTime = (value: string) =>
     hour: 'numeric',
     minute: '2-digit',
   }).format(new Date(value));
+
+const METRIC_HINTS:MetricHints = {
+  uvIndex: [
+    { range: [0, 2], label: '비타민 D 도핑 가능' },
+    { range: [3, 5], label: '피부 탄력을 위해 썬크림은 필수!' },
+    { range: [6, 7], label: '피부 다 죽는다...' },
+    { range: [8, 10], label: '죽을지도모름' },
+    { range: [11, Infinity], label: '연차쓰세요.' },
+  ],
+  rain: [
+    { range: [0, 20], label: '비 맞으면 로또사셈' },
+    { range: [21, 60], label: '홀~짝!' },
+    { range: [61, 100], label: '짱큰장우산챙기세요.' },
+  ],
+  pm10: [
+    { range: [0, 30], label: '공기 싹싹김치' },
+    { range: [31, 80], label: '출근합시다' },
+    { range: [81, 150], label: '꼭 나가야 할까요?' },
+    { range: [151, Infinity], label: '공기청정기 야근특근' },
+  ],
+  pm2_5: [
+    { range: [0, 15], label: '공기 싹싹김치' },
+    { range: [16, 35], label: '출근합시다' },
+    { range: [36, 75], label: '꼭 나가야 할까요?' },
+    { range: [76, Infinity], label: '공기청정기 야근특근' },
+  ],
+  humidity: [
+    { range: [0, 29], label: '가습기 틀기 (밥솥가능)' },
+    { range: [30, 60], label: '쾌적하네요 호호' },
+    { range: [61, 80], label: '팡이제로 ㄱㄱ' },
+    { range: [81, Infinity], label: '비왔거나, 비오거나' },
+  ],
+  windSpeed: [
+    { range: [0, 1.5], label: '미니선풍기라도 틀어줄까?' },
+    { range: [1.6, 5.4], label: '바람이 분다..' },
+    { range: [5.5, 10.7], label: '조금 재밌을지도?' },
+    { range: [10.8, 17.1], label: '머리위를 조심하세요' },
+    { range: [17.2, Infinity], label: '죽을지도 모릅니다' },
+  ]
+};
+
+const getHint = (key: string, value: string | number): string => {
+  return METRIC_HINTS[key as keyof MetricHints]?.find((item) => {
+    const [min, max] = item.range;
+    return Number(value) >= min && Number(value) <= max;
+  })?.label ?? '';
+};
 
 function App() {
   const [isInfoOpen, setIsInfoOpen] = useState(false);
@@ -107,7 +170,7 @@ function App() {
           </p>
         </section>
 
-        <SectionCard eyebrow="Location & Weather" title="위치와 날씨 정보">
+        <SectionCard eyebrow="Location & Weather" title="지금 나는?">
           {error ? (
             <div className="empty-state">
               <p>{error}</p>
@@ -124,10 +187,6 @@ function App() {
               <div className="location-row">
                 <div>
                   <strong>{weather.locationLabel}</strong>
-                  <p>
-                    위도 {formatCoordinate(coordinates.latitude)} / 경도{' '}
-                    {formatCoordinate(coordinates.longitude)}
-                  </p>
                 </div>
                 <div className="temperature-chip">
                   <strong>{Math.round(weather.currentTemperature)}°</strong>
@@ -138,32 +197,32 @@ function App() {
                 <MetricCard
                   label="강수확률"
                   value={`${Math.round(weather.precipitationProbability)}%`}
-                  hint="외출 전 우산 여부"
+                  hint={getHint('rain', Math.round(weather.precipitationProbability))}
                 />
                 <MetricCard
                   label="자외선"
                   value={weather.uvIndex.toFixed(1)}
-                  hint="피부 노출 대비"
+                  hint={getHint('uvIndex', weather.uvIndex.toFixed(1))}
                 />
                 <MetricCard
                   label="미세먼지 PM10"
-                  value={`${Math.round(weather.pm10)}`}
-                  hint="㎍/m³"
+                  value={`${Math.round(weather.pm10)} ㎍/m³`}
+                  hint={getHint('pm10', Math.round(weather.pm10))}
                 />
                 <MetricCard
                   label="초미세먼지 PM2.5"
-                  value={`${Math.round(weather.pm2_5)}`}
-                  hint="㎍/m³"
+                  value={`${Math.round(weather.pm2_5)} ㎍/m³`}
+                  hint={getHint('pm2_5', Math.round(weather.pm2_5))}
                 />
                 <MetricCard
                   label="습도"
                   value={`${Math.round(weather.humidity)}%`}
-                  hint="체감 쾌적도"
+                  hint={getHint('humidity', weather.humidity)}
                 />
                 <MetricCard
                   label="풍속"
                   value={`${Math.round(weather.windSpeed)} km/h`}
-                  hint="바람 영향"
+                  hint={getHint('windSpeed', Math.round(weather.windSpeed))}
                 />
               </div>
             </>
