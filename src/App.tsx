@@ -10,6 +10,8 @@ import { useWeatherSnapshot } from './hooks/useWeatherSnapshot';
 import { applyThemeVariables, resolveThemeVariables } from './utils/theme';
 import { getClothingRecommendation, getProductRecommendations } from './utils/recommendation';
 
+const COOKIE_CONSENT_STORAGE_KEY = 'wearther-cookie-consent';
+
 const categoryLabels: Record<string, string> = {
   light: '가벼운 착장',
   layered: '레이어드',
@@ -92,8 +94,8 @@ const getHint = (key: string, value: string | number): string => {
 };
 
 function App() {
-  const [isInfoOpen, setIsInfoOpen] = useState(false);
   const [clientNow, setClientNow] = useState(() => new Date());
+  const [cookieConsent, setCookieConsent] = useState<'accepted' | 'rejected' | null>(null);
   const { coordinates, loading: locationLoading, error: locationError, requestLocation } =
     useGeolocation();
   const { data: weather, loading: weatherLoading, error: weatherError } =
@@ -126,6 +128,19 @@ function App() {
     applyThemeVariables(resolveThemeVariables(weather, clientNow));
   }, [clientNow, weather]);
 
+  useEffect(() => {
+    const storedConsent = window.localStorage.getItem(COOKIE_CONSENT_STORAGE_KEY);
+
+    if (storedConsent === 'accepted' || storedConsent === 'rejected') {
+      setCookieConsent(storedConsent);
+    }
+  }, []);
+
+  const handleCookieConsentSelect = (value: 'accepted' | 'rejected') => {
+    window.localStorage.setItem(COOKIE_CONSENT_STORAGE_KEY, value);
+    setCookieConsent(value);
+  };
+
   return (
     <>
       <MobileFrame
@@ -133,17 +148,40 @@ function App() {
           <div className="hero">
             <div>
               <p className="hero__eyebrow">Wearther</p>
-              <h1>오늘 날씨에 맞는 옷차림과 쇼핑 링크</h1>
+              <h1>오늘 뭐 입지?</h1>
             </div>
-            <button type="button" className="icon-button" onClick={() => setIsInfoOpen(true)}>
-              안내
-            </button>
           </div>
         }
         footer={
           <button type="button" className="primary-button primary-button--ghost" onClick={requestLocation}>
             위치 다시 확인
           </button>
+        }
+        floatingOverlay={
+          cookieConsent === null ? (
+            <section className="cookie-banner" aria-label="쿠키 사용 동의 배너">
+              <div className="cookie-banner__copy">
+                <strong>쿠키 사용 여부를 선택해 주세요.</strong>
+                <p>본 웹사이트는 원활한 서비스 제공, 방문 통계 분석 및 맞춤형 콘텐츠 제공을 위해 쿠키를 사용합니다. 자세한 내용은 쿠키 정책에서 확인하실 수 있으며, 계속 이용 시 쿠키 사용에 동의한 것으로 봅니다.</p>
+              </div>
+              <div className="cookie-banner__actions">
+                <button
+                  type="button"
+                  className="cookie-option"
+                  onClick={() => handleCookieConsentSelect('accepted')}
+                >
+                  동의
+                </button>
+                <button
+                  type="button"
+                  className="cookie-option"
+                  onClick={() => handleCookieConsentSelect('rejected')}
+                >
+                  거부
+                </button>
+              </div>
+            </section>
+          ) : null
         }
       >
         <section className="hero-panel">
@@ -159,14 +197,6 @@ function App() {
                   weather.observationTime,
                 )} 관측값`
               : '브라우저 위치 권한을 허용하면 현재 위치에 맞는 날씨와 추천 정보를 표시합니다.'}
-          </p>
-          <p>
-            클라이언트 시간 기준{' '}
-            {new Intl.DateTimeFormat('ko-KR', {
-              hour: 'numeric',
-              minute: '2-digit',
-            }).format(clientNow)}
-            {' '}테마 적용 중
           </p>
         </section>
 
@@ -269,14 +299,6 @@ function App() {
           )}
         </SectionCard>
       </MobileFrame>
-
-      <Modal title="서비스 안내" open={isInfoOpen} onClose={() => setIsInfoOpen(false)}>
-        <div className="modal-copy">
-          <p>이 페이지는 브라우저 위치 권한을 기반으로 현재 위치의 날씨와 공기질 정보를 조회합니다.</p>
-          <p>조회된 데이터는 Open-Meteo 공개 API를 기준으로 불러오며, 추천 로직은 체감온도, 강수확률, 자외선, 공기질을 함께 반영합니다.</p>
-          <p>설정 페이지 대신 모달 안에서 권한 흐름과 동작 방식을 설명하도록 구성했습니다.</p>
-        </div>
-      </Modal>
     </>
   );
 }
