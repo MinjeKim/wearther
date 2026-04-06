@@ -105,11 +105,15 @@ function App() {
     () => (weather ? getClothingRecommendation(weather) : null),
     [weather],
   );
-  const products = useMemo(
-    () =>
-      clothingRecommendation ? getProductRecommendations(clothingRecommendation) : [],
-    [clothingRecommendation],
-  );
+  const [products, setProducts] = useState<import('./types').ProductRecommendation[]>([]);
+
+  useEffect(() => {
+    if (!clothingRecommendation) {
+      setProducts([]);
+      return;
+    }
+    getProductRecommendations(clothingRecommendation).then(setProducts);
+  }, [clothingRecommendation]);
 
   const loading = locationLoading || weatherLoading;
   const error = locationError ?? weatherError;
@@ -270,12 +274,10 @@ function App() {
               </div>
               <ul className="pill-list">
                 {clothingRecommendation.categories.map((category) => (
-                  <RecommendationPill key={category}>
-                    {categoryLabels[category]}
-                  </RecommendationPill>
+                  <li key={category}><RecommendationPill>{categoryLabels[category]}</RecommendationPill></li>
                 ))}
                 {clothingRecommendation.items.map((item) => (
-                  <RecommendationPill key={item}>{item}</RecommendationPill>
+                  <li key={item}><RecommendationPill>{item}</RecommendationPill></li>
                 ))}
               </ul>
             </div>
@@ -293,7 +295,9 @@ function App() {
           {products.length > 0 ? (
             <div className="product-list">
               {products.map((product) => (
-                <ProductCard key={product.id} product={product} />
+                <div key={product.id}>
+                  <ProductCard product={product} />
+                </div>
               ))}
             </div>
           ) : (

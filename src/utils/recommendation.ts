@@ -5,22 +5,25 @@ import type {
   WeatherSnapshot,
   Mall
 } from '../types';
+import { fetchDeeplinkUrl } from '../services/deeplinkApi';
 
 const MALLS:Mall[] = [
-  {id: "", name: "", url: "",}
+  {
+    merchantId: "gmarket",
+    siteName: "G마켓",
+    searchUrlTemplate: "https://www.gmarket.co.kr/n/search?keyword={keyword}",
+  },
+  {
+    merchantId: "auction",
+    siteName: "옥션",
+    searchUrlTemplate: "https://www.auction.co.kr/n/search?keyword={keyword}",
+  },
+  {
+    merchantId: "lotteon",
+    siteName: "롯데온",
+    searchUrlTemplate: "https://www.lotteon.com/csearch/search/search?render=search&q={keyword}",
+  },
 ];
-
-const mallSearchUrls: Record<string, string> = {
-  '반팔 티셔츠': 'https://www.musinsa.com/search/goods?keyword=%EB%B0%98%ED%8C%94%20%ED%8B%B0%EC%85%94%EC%B8%A0',
-  '린넨 셔츠': 'https://www.29cm.co.kr/search?keyword=%EB%A6%B0%EB%84%A8%20%EC%85%94%EC%B8%A0',
-  가디건: 'https://www.wconcept.co.kr/Search?keyword=%EA%B0%80%EB%94%94%EA%B1%B4',
-  후드집업: 'https://www.musinsa.com/search/goods?keyword=%ED%9B%84%EB%93%9C%EC%A7%91%EC%97%85',
-  트렌치코트: 'https://www.29cm.co.kr/search?keyword=%ED%8A%B8%EB%A0%8C%EC%B9%98%20%EC%BD%94%ED%8A%B8',
-  경량패딩: 'https://www.wconcept.co.kr/Search?keyword=%EA%B2%BD%EB%9F%89%ED%8C%A8%EB%94%A9',
-  우산: 'https://www.coupang.com/np/search?q=%EC%9A%B0%EC%82%B0',
-  선글라스: 'https://www.musinsa.com/search/goods?keyword=%EC%84%A0%EA%B8%80%EB%9D%BC%EC%8A%A4',
-  모자: 'https://www.29cm.co.kr/search?keyword=%EB%AA%A8%EC%9E%90',
-};
 
 const getAirQualityText = (aqi: number) => {
   if (aqi <= 50) return '공기질이 좋아 가벼운 외출에 무리가 없습니다.';
@@ -92,18 +95,24 @@ export const getClothingRecommendation = (
   };
 };
 
-export const getProductRecommendations = (
+const getUrlForItem = async (item: string, mall: Mall): Promise<string> => {
+  return fetchDeeplinkUrl(mall.merchantId, mall.searchUrlTemplate.replace('{keyword}', item));
+}
+
+export const getProductRecommendations = async (
   recommendation: ClothingRecommendation,
-): ProductRecommendation[] =>
-  recommendation.items.slice(0, 4).map((item, index) => ({
-    id: `${item}-${index}`,
-    title: item,
-    subtitle: `${recommendation.headline}에 맞춘 추천 검색 링크`,
-    mallName:
-      item === '우산' ? 'Coupang' : item === '가디건' || item === '경량패딩' ? 'W Concept' : index % 2 === 0 ? 'MUSINSA' : '29CM',
-    url: mallSearchUrls[item] ?? 'https://www.musinsa.com/',
-    badge:
-      item === '우산' || item === '선글라스' || item === '모자'
-        ? '액세서리'
-        : '추천 의류',
-  }));
+): Promise<ProductRecommendation[]> => {
+  return Promise.all(
+    recommendation.items.slice(0, 4).map(async (item, index) => {
+      const mall = MALLS[Math.floor(Math.random() * MALLS.length)];
+      return ({
+        id: `${item}-${index}`,
+        title: item,
+        subtitle: `${recommendation.headline}에 맞춘 추천 검색 링크`,
+        mallName: mall.siteName,
+        url: await getUrlForItem(item, mall),
+        badge: '추천 의류',
+      })
+    })
+  );
+}

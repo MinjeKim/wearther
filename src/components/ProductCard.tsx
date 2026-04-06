@@ -1,10 +1,11 @@
+import React from 'react';
 import type { ProductRecommendation } from '../types';
 
 type ProductCardProps = {
   product: ProductRecommendation;
 };
 
-export function ProductCard({ product }: ProductCardProps) {
+export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   return (
     <a
       className="product-card"
@@ -21,4 +22,4 @@ export function ProductCard({ product }: ProductCardProps) {
       </span>
     </a>
   );
-}
+};

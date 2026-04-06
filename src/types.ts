@@ -47,7 +47,17 @@ export type ThemeMode = 'morning' | 'day' | 'evening' | 'night';
 export type ThemeWeather = 'clear' | 'cloudy' | 'rainy' | 'snowy';
 
 export type Mall = {
-  id: string,
-  name: string,
-  url: string,
+  merchantId: string;
+  siteName: string;
+  searchUrlTemplate: string;
+  // sub_category: string[];
+  // note: string;
 }
+
+export type Item = {
+  name: string;
+  category: string;
+  gender: ('male'|'female'|'unisex'); // 남성, 여성, 공용
+  range: number[]; // 기온 범위, 기온과 관계 없을 때는 빈 배열
+  special: ('rain'|'snow'|'dust'|'uv')[]; // 특별한 상황 (rain: 비, snow: 눈, dust: 미세먼지, uv: 자외선). 관계 없으면 빈 배열ㄴ
+};

@@ -1,7 +1,9 @@
+import React from 'react';
+
 type RecommendationPillProps = {
   children: string;
 };
 
-export function RecommendationPill({ children }: RecommendationPillProps) {
-  return <li className="pill">{children}</li>;
-}
+export const RecommendationPill: React.FC<RecommendationPillProps> = ({ children }) => {
+  return <span className="pill">{children}</span>;
+};
