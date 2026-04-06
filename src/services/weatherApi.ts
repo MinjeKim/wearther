@@ -1,5 +1,6 @@
 import axios from 'axios';
 import type { Coordinates, WeatherSnapshot } from '../types';
+import { toQueryString } from '../utils/api';
 
 const WEATHER_BASE_URL = 'https://api.open-meteo.com/v1/forecast';
 const AIR_QUALITY_BASE_URL = 'https://air-quality-api.open-meteo.com/v1/air-quality';
@@ -37,14 +38,6 @@ type ReverseGeocodingResponse = {
     state?: string;
   };
 };
-
-const toQueryString = (params: Record<string, string | number>) =>
-  new URLSearchParams(
-    Object.entries(params).reduce<Record<string, string>>((acc, [key, value]) => {
-      acc[key] = String(value);
-      return acc;
-    }, {}),
-  ).toString();
 
 export const fetchWeatherSnapshot = async ({
   latitude,
