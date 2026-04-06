@@ -60,16 +60,16 @@ const METRIC_HINTS:MetricHints = {
     { range: [61, 100], label: '짱큰장우산챙기세요' },
   ],
   pm10: [
-    { range: [0, 30], label: '공기 싹싹김치' },
-    { range: [31, 80], label: '이정도면 참고 나갈만 해' },
-    { range: [81, 150], label: '꼭 나가야 할까요?' },
-    { range: [151, Infinity], label: '공기청정기 야근특근' },
+    { range: [0, 22], label: '공기 싹싹김치' },
+    { range: [23, 45], label: '이정도면 참고 나갈만 해' },
+    { range: [46, 100], label: '꼭 나가야 할까요?' },
+    { range: [101, Infinity], label: '공기청정기 야근특근' },
   ],
   pm2_5: [
-    { range: [0, 15], label: '공기 싹싹김치' },
-    { range: [16, 35], label: '이정도면 참고 나갈만 해' },
-    { range: [36, 75], label: '꼭 나가야 할까요?' },
-    { range: [76, Infinity], label: '공기청정기 야근특근' },
+    { range: [0, 9], label: '공기 싹싹김치' },
+    { range: [10, 15], label: '이정도면 참고 나갈만 해' },
+    { range: [16, 50], label: '꼭 나가야 할까요?' },
+    { range: [51, Infinity], label: '공기청정기 야근특근' },
   ],
   humidity: [
     { range: [0, 29], label: '가습기 틀기 (밥솥가능)' },
@@ -79,8 +79,8 @@ const METRIC_HINTS:MetricHints = {
   ],
   windSpeed: [
     { range: [0, 1.5], label: '미니선풍기라도 틀어줄까?' },
-    { range: [1.6, 5.4], label: '바람이 분다..' },
-    { range: [5.5, 10.7], label: '조금 재밌을지도?' },
+    { range: [1.6, 5.4], label: '자연풍' },
+    { range: [5.5, 10.7], label: '머리말리기 딱 좋다' },
     { range: [10.8, 17.1], label: '머리위를 조심하세요' },
     { range: [17.2, Infinity], label: '죽을지도 모릅니다' },
   ]
