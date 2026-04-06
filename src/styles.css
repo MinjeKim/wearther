@@ -102,7 +102,11 @@ a {
   display: flex;
   flex-direction: column;
   gap: 14px;
-  padding: 16px 20px 152px;
+  padding: 16px 20px 20px;
+}
+
+.content--with-overlay {
+  padding-bottom: 152px;
 }
 
 .hero,
@@ -118,6 +122,7 @@ a {
 
 .hero h1,
 .section-card h2,
+.section-card h3,
 .modal-panel h3,
 .temperature-chip strong,
 .hero-panel strong,
@@ -133,6 +138,13 @@ a {
   font-size: 0.75rem;
   letter-spacing: 0.12em;
   text-transform: uppercase;
+}
+
+.caption {
+  margin: 0 0 6px;
+  color: var(--accent);
+  font-size: 0.75rem;
+  letter-spacing: 0.12em;
 }
 
 .hero h1 {
@@ -343,8 +355,8 @@ a {
 
 .cookie-banner__copy p {
   margin: 6px 0 0;
-  color: #ffffff;
   line-height: 1.5;
+  color: var(--accent)
 }
 
 .cookie-banner__actions {

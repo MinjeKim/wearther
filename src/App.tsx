@@ -57,17 +57,17 @@ const METRIC_HINTS:MetricHints = {
   rain: [
     { range: [0, 20], label: '비 맞으면 로또사셈' },
     { range: [21, 60], label: '홀~짝!' },
-    { range: [61, 100], label: '짱큰장우산챙기세요.' },
+    { range: [61, 100], label: '짱큰장우산챙기세요' },
   ],
   pm10: [
     { range: [0, 30], label: '공기 싹싹김치' },
-    { range: [31, 80], label: '출근합시다' },
+    { range: [31, 80], label: '이정도면 참고 나갈만 해' },
     { range: [81, 150], label: '꼭 나가야 할까요?' },
     { range: [151, Infinity], label: '공기청정기 야근특근' },
   ],
   pm2_5: [
     { range: [0, 15], label: '공기 싹싹김치' },
-    { range: [16, 35], label: '출근합시다' },
+    { range: [16, 35], label: '이정도면 참고 나갈만 해' },
     { range: [36, 75], label: '꼭 나가야 할까요?' },
     { range: [76, Infinity], label: '공기청정기 야근특근' },
   ],
@@ -148,7 +148,7 @@ function App() {
           <div className="hero">
             <div>
               <p className="hero__eyebrow">Wearther</p>
-              <h1>오늘 뭐 입지?</h1>
+              <h1>오늘 뭐 입어야 돼?</h1>
             </div>
           </div>
         }
@@ -157,6 +157,7 @@ function App() {
             위치 다시 확인
           </button>
         }
+        reserveOverlaySpace={cookieConsent === null}
         floatingOverlay={
           cookieConsent === null ? (
             <section className="cookie-banner" aria-label="쿠키 사용 동의 배너">
@@ -285,7 +286,10 @@ function App() {
           )}
         </SectionCard>
 
-        <SectionCard eyebrow="Shopping Link" title="상품 추천">
+        <SectionCard 
+          eyebrow="Shopping Link" 
+          title="상품 추천" 
+          caption='구매링크는 일부 제휴사의 제휴링크로 전환될 수 있으며, 이에 따른 일정액의 광고수수료를 제공받습니다.'>
           {products.length > 0 ? (
             <div className="product-list">
               {products.map((product) => (

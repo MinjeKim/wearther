@@ -3,7 +3,12 @@ import type {
   ClothingRecommendation,
   ProductRecommendation,
   WeatherSnapshot,
+  Mall
 } from '../types';
+
+const MALLS:Mall[] = [
+  {id: "", name: "", url: "",}
+];
 
 const mallSearchUrls: Record<string, string> = {
   '반팔 티셔츠': 'https://www.musinsa.com/search/goods?keyword=%EB%B0%98%ED%8C%94%20%ED%8B%B0%EC%85%94%EC%B8%A0',

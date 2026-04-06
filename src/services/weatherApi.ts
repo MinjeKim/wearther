@@ -1,3 +1,4 @@
+import axios from 'axios';
 import type { Coordinates, WeatherSnapshot } from '../types';
 
 const WEATHER_BASE_URL = 'https://api.open-meteo.com/v1/forecast';
@@ -73,20 +74,16 @@ export const fetchWeatherSnapshot = async ({
   })}`;
 
   const [forecastResponse, airQualityResponse, reverseGeocodingResponse] = await Promise.all([
-    fetch(forecastUrl),
-    fetch(airQualityUrl),
-    fetch(reverseGeocodingUrl),
+    axios.get<ForecastResponse>(forecastUrl),
+    axios.get<AirQualityResponse>(airQualityUrl),
+    axios
+      .get<ReverseGeocodingResponse>(reverseGeocodingUrl)
+      .catch(() => null),
   ]);
 
-  if (!forecastResponse.ok || !airQualityResponse.ok) {
-    throw new Error('날씨 정보를 불러오지 못했습니다.');
-  }
-
-  const forecastData = (await forecastResponse.json()) as ForecastResponse;
-  const airQualityData = (await airQualityResponse.json()) as AirQualityResponse;
-  const reverseGeocodingData = reverseGeocodingResponse.ok
-    ? ((await reverseGeocodingResponse.json()) as ReverseGeocodingResponse)
-    : undefined;
+  const forecastData = forecastResponse.data;
+  const airQualityData = airQualityResponse.data;
+  const reverseGeocodingData = reverseGeocodingResponse?.data;
   const address = reverseGeocodingData?.address;
   const locationLabel = [
     address?.city ?? address?.state ?? address?.county ?? address?.town,

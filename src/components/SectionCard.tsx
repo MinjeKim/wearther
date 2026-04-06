@@ -4,6 +4,7 @@ type SectionCardProps = PropsWithChildren<{
   eyebrow: string;
   title: string;
   action?: ReactNode;
+  caption?: string;
 }>;
 
 export function SectionCard({
@@ -11,6 +12,7 @@ export function SectionCard({
   title,
   action,
   children,
+  caption,
 }: SectionCardProps) {
   return (
     <section className="section-card">
@@ -22,6 +24,7 @@ export function SectionCard({
         {action}
       </div>
       <div className="section-card__body">{children}</div>
+      <p className="caption">{caption}</p>
     </section>
   );
 }

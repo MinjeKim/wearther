@@ -45,3 +45,9 @@ export type ProductRecommendation = {
 
 export type ThemeMode = 'morning' | 'day' | 'evening' | 'night';
 export type ThemeWeather = 'clear' | 'cloudy' | 'rainy' | 'snowy';
+
+export type Mall = {
+  id: string,
+  name: string,
+  url: string,
+}
