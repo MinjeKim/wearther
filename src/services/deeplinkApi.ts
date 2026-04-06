@@ -3,7 +3,10 @@ import { toQueryString } from '../utils/api';
 
 const DEEPLINK_URL = "https://api.linkprice.com/ci/service/custom_link_xml.php";
 
-export const fetchDeeplinkUrl = async (merchantId, url) => {
+export const fetchDeeplinkUrl = async (
+  merchantId: string,
+  url: string,
+): Promise<string> => {
   // try {
   //   const response = await axios.get(`${DEEPLINK_URL}?${toQueryString({
   //     a_id: 'A100703714',

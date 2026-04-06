@@ -112,8 +112,22 @@ function App() {
       setProducts([]);
       return;
     }
-    getProductRecommendations(clothingRecommendation).then(setProducts);
-  }, [clothingRecommendation]);
+
+    let cancelled = false;
+
+    getProductRecommendations(
+      clothingRecommendation,
+      cookieConsent === 'accepted',
+    ).then((nextProducts) => {
+      if (!cancelled) {
+        setProducts(nextProducts);
+      }
+    });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [clothingRecommendation, cookieConsent]);
 
   const loading = locationLoading || weatherLoading;
   const error = locationError ?? weatherError;

@@ -95,12 +95,26 @@ export const getClothingRecommendation = (
   };
 };
 
-const getUrlForItem = async (item: string, mall: Mall): Promise<string> => {
-  return fetchDeeplinkUrl(mall.merchantId, mall.searchUrlTemplate.replace('{keyword}', item));
-}
+const getRawUrlForItem = (item: string, mall: Mall): string =>
+  mall.searchUrlTemplate.replace('{keyword}', encodeURIComponent(item));
+
+const getUrlForItem = async (
+  item: string,
+  mall: Mall,
+  useAffiliateLink: boolean,
+): Promise<string> => {
+  const rawUrl = getRawUrlForItem(item, mall);
+
+  if (!useAffiliateLink) {
+    return rawUrl;
+  }
+
+  return fetchDeeplinkUrl(mall.merchantId, rawUrl);
+};
 
 export const getProductRecommendations = async (
   recommendation: ClothingRecommendation,
+  useAffiliateLink: boolean,
 ): Promise<ProductRecommendation[]> => {
   return Promise.all(
     recommendation.items.slice(0, 4).map(async (item, index) => {
@@ -110,7 +124,7 @@ export const getProductRecommendations = async (
         title: item,
         subtitle: `${recommendation.headline}에 맞춘 추천 검색 링크`,
         mallName: mall.siteName,
-        url: await getUrlForItem(item, mall),
+        url: await getUrlForItem(item, mall, useAffiliateLink),
         badge: '추천 의류',
       })
     })
