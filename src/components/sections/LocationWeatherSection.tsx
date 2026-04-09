@@ -46,32 +46,32 @@ export function LocationWeatherSection({
             <MetricCard
               label="강수확률"
               value={`${Math.round(weather.precipitationProbability)}%`}
-              hint={getMetricHint('rain', Math.round(weather.precipitationProbability))}
+              hint={getMetricHint('rain', Math.round(weather.precipitationProbability), weather.isDay)}
             />
             <MetricCard
               label="자외선"
               value={weather.uvIndex.toFixed(1)}
-              hint={getMetricHint('uvIndex', weather.uvIndex.toFixed(1))}
+              hint={getMetricHint('uvIndex', weather.uvIndex.toFixed(1), weather.isDay)}
             />
             <MetricCard
               label="미세먼지 PM10"
               value={`${Math.round(weather.pm10)} ㎍/m³`}
-              hint={getMetricHint('pm10', Math.round(weather.pm10))}
+              hint={getMetricHint('pm10', Math.round(weather.pm10), weather.isDay)}
             />
             <MetricCard
               label="초미세먼지 PM2.5"
               value={`${Math.round(weather.pm2_5)} ㎍/m³`}
-              hint={getMetricHint('pm2_5', Math.round(weather.pm2_5))}
+              hint={getMetricHint('pm2_5', Math.round(weather.pm2_5), weather.isDay)}
             />
             <MetricCard
               label="습도"
               value={`${Math.round(weather.humidity)}%`}
-              hint={getMetricHint('humidity', weather.humidity)}
+              hint={getMetricHint('humidity', weather.humidity, weather.isDay)}
             />
             <MetricCard
               label="풍속"
               value={`${Math.round(weather.windSpeed)} km/h`}
-              hint={getMetricHint('windSpeed', Math.round(weather.windSpeed))}
+              hint={getMetricHint('windSpeed', Math.round(weather.windSpeed), weather.isDay)}
             />
           </div>
         </>

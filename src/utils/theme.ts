@@ -4,62 +4,18 @@ import type { WeatherSnapshot } from '../types';
 type ThemeVariables = Record<string, string>;
 
 type ThemeTokens = {
-  timeOfDay: Record<'morning' | 'day' | 'evening' | 'night', ThemeVariables>;
-  weather: Record<'clear' | 'cloudy' | 'rainy' | 'snowy', ThemeVariables>;
+  timeOfDay: Record<'light' | 'dark', ThemeVariables>;
 };
 
 type TimeOfDay = keyof ThemeTokens['timeOfDay'];
-type WeatherTheme = keyof ThemeTokens['weather'];
 
 const tokens = themeTokens as ThemeTokens;
 
-export const getClientTimeBucket = (date: Date): TimeOfDay => {
-  const hours = date.getHours();
-
-  if (hours >= 6 && hours < 11) return 'morning';
-  if (hours >= 11 && hours < 17) return 'day';
-  if (hours >= 17 && hours < 21) return 'evening';
-  return 'night';
-};
-
-export const getWeatherTheme = (weather: WeatherSnapshot | null): WeatherTheme => {
-  if (!weather) {
-    return 'clear';
-  }
-
-  const code = weather.weatherCode;
-
-  if ([71, 73, 75, 77, 85, 86].includes(code)) {
-    return 'snowy';
-  }
-
-  if (
-    [51, 53, 55, 56, 57, 61, 63, 65, 66, 67, 80, 81, 82, 95, 96, 99].includes(
-      code,
-    ) ||
-    weather.precipitationProbability >= 40
-  ) {
-    return 'rainy';
-  }
-
-  if ([1, 2, 3, 45, 48].includes(code)) {
-    return 'cloudy';
-  }
-
-  return 'clear';
-};
-
 export const resolveThemeVariables = (
-  weather: WeatherSnapshot | null,
-  now: Date,
+  _weather: WeatherSnapshot | null,
 ): ThemeVariables => {
-  const timeBucket = getClientTimeBucket(now);
-  const weatherTheme = getWeatherTheme(weather);
-
-  return {
-    ...tokens.timeOfDay[timeBucket],
-    ...tokens.weather[weatherTheme],
-  };
+  const timeBucket = _weather?.isDay ? 'light' : 'dark';
+  return tokens.timeOfDay[timeBucket];
 };
 
 export const applyThemeVariables = (variables: ThemeVariables) => {
